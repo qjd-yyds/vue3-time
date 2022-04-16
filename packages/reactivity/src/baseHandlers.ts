@@ -1,5 +1,13 @@
 import { isArray, isObject, isIntegerKey, hasOwn } from '@vue/shared'
-import { reactive, Target } from './reactive'
+import {
+  reactive,
+  Target,
+  ReactiveFlags,
+  readonlyMap,
+  shallowReactiveMap,
+  reactiveMap,
+  shallowReadonlyMap
+} from './reactive'
 import { TrackOpTypes, TriggerOpTypes } from './operations'
 import { track, trigger } from './effect'
 
@@ -8,6 +16,32 @@ const set = /*#__PURE__*/ createSetter()
 // 创建get拦截器
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target: Target, key: string | symbol, receiver: object) {
+    // 判断当前对象是否是reactive对象
+    if (key === ReactiveFlags.IS_READONLY) {
+      // 只要不是只读的，返回true
+      return !isReadonly
+    } else if (key === ReactiveFlags.IS_READONLY) {
+      // 判断是否是只读属性
+      return isReadonly
+    } else if (key === ReactiveFlags.IS_SHALLOW) {
+      // 判断是否是浅层劫持
+      return shallow
+    } else if (
+      key == ReactiveFlags.RAW &&
+      receiver ===
+        (isReadonly
+          ? shallow
+            ? shallowReadonlyMap
+            : readonlyMap
+          : shallow
+          ? shallowReactiveMap
+          : reactiveMap
+        ).get(target)
+    ) {
+      // 如果获取的key访问的是原始数据并且this指向的对象已经被收集
+      // 返回原始的数据
+      return target
+    }
     console.log('触发了get操作')
     // 这里处理数组
     const targetIsArray = isArray(target)

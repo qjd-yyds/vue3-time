@@ -20,7 +20,14 @@ export const reactiveMap = new WeakMap<Target, any>()
 export const shallowReactiveMap = new WeakMap<Target, any>()
 export const readonlyMap = new WeakMap<Target, any>()
 export const shallowReadonlyMap = new WeakMap<Target, any>()
-
+/**
+ * @description: reactive 内部吐出的对象
+ * @param {object} target 需要被劫持对象
+ * @return {boolean} isReadonly 是否是只读
+ * @return {ProxyHandler} baseHandlers 访问器属性
+ * @return {ProxyHandler} ProxyHandler 访问器属性
+ * @return {WeakMap} proxyMap 依赖对象
+ */
 function createReativeObject(
   target: Target,
   isReadonly: Boolean,

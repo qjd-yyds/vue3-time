@@ -29,6 +29,15 @@ importers:
       rollup: 2.70.1
       typescript: 4.6.3
 
+  packages/reactivity:
+    specifiers:
+      '@vue/shared': workspace:^1.0.0
+    dependencies:
+      '@vue/shared': link:../shared
+
+  packages/shared:
+    specifiers: {}
+
 packages:
 
   /@esbuild-plugins/node-modules-polyfill/0.1.4_esbuild@0.14.30:
